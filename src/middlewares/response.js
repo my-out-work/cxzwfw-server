@@ -7,9 +7,9 @@ module.exports = async function (ctx, next) {
     }
   }
 
-  ctx.failed = (msg = 'failed', data = '') => {
+  ctx.failed = (msg = 'failed', code = 1, data = '') => {
     ctx.body = {
-      code: 1,
+      code,
       msg,
       data
     }

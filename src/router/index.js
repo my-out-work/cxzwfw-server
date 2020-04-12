@@ -4,6 +4,7 @@ const wxconfig = require('../config/wx.config')
 const pkg = require('../../package.json')
 const db = require('../db/query')
 const cxzw = require('../cxzw')
+const cxzwuser = require('../cxzw/user')
 
 const router = new Router()
 
@@ -14,8 +15,7 @@ const WXCALLBAK_URL = '//localhost:3000/wxcallbak'
 
 // test
 router.get('/', async (ctx, next) => {
-	const res = await db.query('select * from tab_news where id = 1 and status = 1')
-  ctx.body = 'hello ' + APP_NAME + ' ' + res[0].title
+  ctx.body = 'hello ' + APP_NAME
 })
 
 // 获取首页区块信息
@@ -69,8 +69,80 @@ router.get('/getProjectDetail', async (ctx, next) => {
   }
 })
 
+router.post('/login', async ctx => {
+  if (ctx.session.user) {
+    return ctx.success(ctx.session.user)
+  }
+
+  const { ticket } = ctx.query
+
+  if (!ticket) {
+    return ctx.failed('ticket 无效')
+  }
+
+  try {
+    const res = await cxzwuser.ticketValidation(ticket)
+    if (res.code === 0) {
+      const result = await cxzwuser.getUserInfo(res.data.token)
+      if (result.code === 0) {
+        ctx.session.user = result.data
+        ctx.success(result.data)
+      } else {
+        ctx.failed(result.msg, result.code)
+      }
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
+
+router.get('/ticketValidation', async (ctx, next) => {
+  const { st } = ctx.query
+  try {
+    const res = await cxzwuser.ticketValidation(st)
+    if (res.code === 0) {
+      ctx.success(res.data)
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
+
+router.get('/idValidation', async (ctx, next) => {
+  const { loginname, password } = ctx.query
+  try {
+    const res = await cxzwuser.idValidation(loginname, password)
+    if (res.code === 0) {
+      ctx.success(res.data)
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
+
+router.get('/getUserInfo', async (ctx, next) => {
+  const { token } = ctx.query
+  try {
+    const res = await cxzwuser.getUserInfo(token)
+    if (res.code === 0) {
+      ctx.session.user = res.data
+      ctx.success(res.data)
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
+
 // 获取微信用户信息
-router.get('/appUserInfo', (ctx, next) => {
+router.get('/wxUserInfo', (ctx, next) => {
 	if (ctx.session.user) {
 		ctx.success(ctx.session.user)
 	} else {
@@ -102,7 +174,7 @@ router.get('/wxcallback', async (ctx, next) => {
     '&code=' + code +
     '&grant_type=authorization_code')
 
-  const { access_token, openid } = JSON.parse(result)
+  const { access_token, openid } = JSON.parse(result.text)
 
   // 2.拉取微信用户信息
   const res = await superagent.get(
@@ -110,7 +182,7 @@ router.get('/wxcallback', async (ctx, next) => {
       '&openid=' + openid +
       '&lang=zh_CN')
 
-	const wxUserInfo = JSON.parse(res)
+	const wxUserInfo = JSON.parse(res.text)
 	if (wxUserInfo) {
 		const { openid, nickname, headimgurl, sex } = wxUserInfo
 		const appUserInfo = {
