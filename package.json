@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "nodemon src/app.js",
-    "serve": "pm2 start app.json"
+    "start": "pm2 start app.json",
+    "stop": "pm2 stop app.json"
   },
   "dependencies": {
     "@koa/router": "^9.0.0",

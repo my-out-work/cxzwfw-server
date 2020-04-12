@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-const pool = mysql.createPool(require('../../../config/db.config'))
+const pool = mysql.createPool(require('../config/db.config'))
 
 exports.query = (sql, val) => {
   return new Promise((resolve, reject) => {

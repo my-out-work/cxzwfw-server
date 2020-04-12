@@ -9,7 +9,7 @@ module.exports = async function (ctx, next) {
 
   ctx.failed = (msg = 'failed', data = '') => {
     ctx.body = {
-      code: -1,
+      code: 1,
       msg,
       data
     }
