@@ -71,7 +71,10 @@ router.get('/getProjectDetail', async (ctx, next) => {
 
 router.post('/login', async ctx => {
   if (ctx.session.user) {
-    return ctx.success(ctx.session.user)
+    return ctx.success({
+      user: ctx.session.user,
+      token: res.session.token
+    })
   }
   const { ticket } = ctx.request.body
 
@@ -103,9 +106,9 @@ router.post('/login', async ctx => {
 })
 
 router.get('/ticketValidation', async (ctx, next) => {
-  const { st } = ctx.query
+  const { ticket } = ctx.query
   try {
-    const res = await cxzwuser.ticketValidation(st)
+    const res = await cxzwuser.ticketValidation(ticket)
     if (res.code === 0) {
       ctx.success(res.data)
     } else {
@@ -116,34 +119,34 @@ router.get('/ticketValidation', async (ctx, next) => {
   }
 })
 
-// router.get('/idValidation', async (ctx, next) => {
-//   const { loginname, password } = ctx.query
-//   try {
-//     const res = await cxzwuser.idValidation(loginname, password)
-//     if (res.code === 0) {
-//       ctx.success(res.data)
-//     } else {
-//       ctx.failed(res.msg, res.code)
-//     }
-//   } catch (error) {
-//     ctx.failed(error)
-//   }
-// })
+router.get('/idValidation', async (ctx, next) => {
+  const { loginname, password } = ctx.query
+  try {
+    const res = await cxzwuser.idValidation(loginname, password)
+    if (res.code === 0) {
+      ctx.success(res.data)
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
 
-// router.get('/getUserInfo', async (ctx, next) => {
-//   const { token } = ctx.query
-//   try {
-//     const res = await cxzwuser.getUserInfo(token)
-//     if (res.code === 0) {
-//       ctx.session.user = res.data
-//       ctx.success(res.data)
-//     } else {
-//       ctx.failed(res.msg, res.code)
-//     }
-//   } catch (error) {
-//     ctx.failed(error)
-//   }
-// })
+router.get('/getUserInfo', async (ctx, next) => {
+  const { token } = ctx.query
+  try {
+    const res = await cxzwuser.getUserInfo(token)
+    if (res.code === 0) {
+      ctx.session.user = res.data
+      ctx.success(res.data)
+    } else {
+      ctx.failed(res.msg, res.code)
+    }
+  } catch (error) {
+    ctx.failed(error)
+  }
+})
 
 // 获取微信用户信息
 router.get('/wxUserInfo', (ctx, next) => {
