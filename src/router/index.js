@@ -73,8 +73,7 @@ router.post('/login', async ctx => {
   if (ctx.session.user) {
     return ctx.success(ctx.session.user)
   }
-
-  const { ticket } = ctx.query
+  const { ticket } = ctx.request.body
 
   if (!ticket) {
     return ctx.failed('ticket 无效')

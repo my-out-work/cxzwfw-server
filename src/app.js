@@ -3,6 +3,7 @@ const Koa_Session = require('koa-session')
 const middleware_response = require('./middlewares/response')
 const pkg = require('../package.json')
 const router = require('./router')
+const bodyParser = require('koa-bodyparser')
 
 const app = new Koa()
 
@@ -23,6 +24,7 @@ const session_config = {
 const session = Koa_Session(session_config, app)
 
 app.use(session)
+  .use(bodyParser())
 	.use(middleware_response)
   .use(router.routes())
   .listen(1001)
