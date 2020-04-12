@@ -4,7 +4,7 @@ const superagent = require('superagent')
 const Koa_Session = require('koa-session')
 const middleware_response = require('./middlewares/response')
 const pkg = require('../package.json')
-const wxconfig = require('./config/wx.config')
+const wxconfig = require('../../config/cxzwfw.wx.config')
 
 
 const app = new Koa()
