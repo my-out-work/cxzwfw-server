@@ -34,7 +34,7 @@ exports.getProjectByFlowSN = async FlowSN => {
     FlowSN
   }).set('Accept', 'application/json')
   console.log(res)
-  return handleResult(res)
+  return handleResult(res.text)
 }
 
 /**
@@ -47,5 +47,5 @@ exports.getProjectDetail = async ProjectGuid => {
   const res = await superagent.post(getProjectDetail).send({
     ProjectGuid
   }).set('Accept', 'application/json')
-  return handleResult(res)
+  return handleResult(res.text)
 }

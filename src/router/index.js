@@ -82,10 +82,15 @@ router.post('/login', async ctx => {
   try {
     const res = await cxzwuser.ticketValidation(ticket)
     if (res.code === 0) {
-      const result = await cxzwuser.getUserInfo(res.data.token)
+      const { token } = res.data.token
+      ctx.session.token = token
+      const result = await cxzwuser.getUserInfo(token)
       if (result.code === 0) {
         ctx.session.user = result.data
-        ctx.success(result.data)
+        ctx.success({
+          user: result.data,
+          token
+        })
       } else {
         ctx.failed(result.msg, result.code)
       }
