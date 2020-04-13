@@ -70,7 +70,7 @@ router.get('/getProjectDetail', async (ctx, next) => {
 })
 
 router.post('/login', async ctx => {
-  if (ctx.session.user) {
+  if (ctx.session.user && ctx.session.token) {
     return ctx.success({
       user: ctx.session.user,
       token: ctx.session.token
