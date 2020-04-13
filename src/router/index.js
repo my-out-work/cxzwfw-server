@@ -150,11 +150,8 @@ router.get('/getUserInfo', async (ctx, next) => {
 
 // 获取微信用户信息
 router.get('/wxUserInfo', (ctx, next) => {
-	if (ctx.session.user) {
-		ctx.success({
-      user: ctx.session.user,
-      token: ctx.session.token
-    })
+	if (ctx.session.wxUserInfo) {
+		ctx.success(ctx.session.wxUserInfo)
 	} else {
     ctx.failed()
   }
@@ -202,7 +199,7 @@ router.get('/wxcallback', async (ctx, next) => {
 			sex
 		}
 		// 3.缓存用户信息
-		ctx.session.user = appUserInfo
+		ctx.session.wxUserInfo = appUserInfo
 	}
 	
 	// 重定向到来源页
