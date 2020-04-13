@@ -73,7 +73,7 @@ router.post('/login', async ctx => {
   if (ctx.session.user) {
     return ctx.success({
       user: ctx.session.user,
-      token: res.session.token
+      token: ctx.session.token
     })
   }
   const { ticket } = ctx.request.body
