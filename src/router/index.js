@@ -165,7 +165,7 @@ router.get('/wxoauth', (ctx, next) => {
     '&redirect_uri=' + redirect +
     '&response_type=code' +
     '&scope=snsapi_userinfo' +
-    '&state=STATE#wechat_redirect'
+    '&state=minjs#wechat_redirect'
 
   ctx.success(url)
 })
@@ -173,6 +173,12 @@ router.get('/wxoauth', (ctx, next) => {
 // 微信授权回调
 router.get('/wxcallback', async (ctx, next) => {
   const { from, code } = ctx.query
+
+  if (!code) {
+    ctx.failed('code 不存在')
+    return
+  }
+
   if (!from) from = '/'
 
   // 1.通过code换取网页授权access_token
@@ -203,7 +209,7 @@ router.get('/wxcallback', async (ctx, next) => {
 	}
 	
 	// 重定向到来源页
-	ctx.response.redirect(from)
+	ctx.response.redirect(decodeURIComponent(from))
 })
 
 module.exports = router
