@@ -160,7 +160,7 @@ router.get('/wxUserInfo', (ctx, next) => {
 // 微信授权
 router.get('/wxoauth', (ctx, next) => {
   const { from = '' } = ctx.query
-  const redirect = encodeURIComponent(WXCALLBAK_URL + '?from=' + decodeURIComponent(from))
+  const redirect = WXCALLBAK_URL + '?from=' + from
   const url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APP_ID +
     '&redirect_uri=' + redirect +
     '&response_type=code' +
@@ -209,7 +209,7 @@ router.get('/wxcallback', async (ctx, next) => {
 	}
 	
 	// 重定向到来源页
-	ctx.response.redirect(decodeURIComponent(from))
+	ctx.response.redirect(from)
 })
 
 module.exports = router
