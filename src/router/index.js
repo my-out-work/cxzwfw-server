@@ -11,7 +11,7 @@ const router = new Router()
 const APP_NAME = pkg.name.split('-')[0]
 const APP_ID = wxconfig.appid
 const APP_SECRET = wxconfig.appsecret
-const WXCALLBAK_URL = '//localhost:3000/wxcallbak'
+const WXCALLBAK_URL = '//wx.minjs.cn/cxzwfw/api/wxcallbak'
 
 // test
 router.get('/', async (ctx, next) => {
